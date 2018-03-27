@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.3.0">
+  <Workflow xmlns:q1="clr-namespace:Bonsai.Miniscope;assembly=Bonsai.Miniscope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:q2="clr-namespace:Bonsai.Scripting;assembly=Bonsai.Scripting" xmlns="https://horizongir.org/bonsai">
+    <Nodes>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q1:UCLAMiniscope">
+          <q1:Index>0</q1:Index>
+          <q1:LEDBrightness>0</q1:LEDBrightness>
+          <q1:Exposure>255</q1:Exposure>
+          <q1:SensorGain>16</q1:SensorGain>
+          <q1:FramesPerSecond>FPS30</q1:FramesPerSecond>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Source.Width</Selector>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Source.Height</Selector>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="CombineLatest" />
+      </Expression>
+      <Expression xsi:type="q2:PythonTransform">
+        <q2:Name>MyMax</q2:Name>
+        <q2:Description>Max</q2:Description>
+        <q2:Script>@returns(int)
+def process(value):
+  return max(value.Item1, value.Item2)</q2:Script>
+      </Expression>
+    </Nodes>
+    <Edges>
+      <Edge>
+        <From>0</From>
+        <To>1</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>0</From>
+        <To>2</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>1</From>
+        <To>3</To>
+        <Label>Source2</Label>
+      </Edge>
+      <Edge>
+        <From>2</From>
+        <To>3</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>3</From>
+        <To>4</To>
+        <Label>Source1</Label>
+      </Edge>
+    </Edges>
+  </Workflow>
+  <ExtensionTypes>
+    <Type>Bonsai.Miniscope.UCLAMiniscope, Bonsai.Miniscope, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Reactive.CombineLatest, Bonsai.Core, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Scripting.PythonTransform, Bonsai.Scripting, Version=2.3.0.0, Culture=neutral, PublicKeyToken=null</Type>
+  </ExtensionTypes>
+</WorkflowBuilder>
